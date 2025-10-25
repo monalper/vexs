@@ -79,7 +79,7 @@ header {
 }
 
 /* Header layout + mobile nav */
-.site-header { background: #ff0000; color: #fff; }
+.site-header { background: #ff0000; color: #fff; font-weight: 700;}
 .header-bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; position: relative; }
 .mobile-nav-toggle { display: none; align-items: center; justify-content: center; width: 40px; height: 40px; border: none; border-radius: 8px; background: transparent; color: inherit; appearance: none; -webkit-appearance: none; }
 .mobile-nav-toggle .hamburger { position: relative; width: 18px; height: 2px; background: currentColor; display: block; }
@@ -90,10 +90,58 @@ header {
 @media (max-width: 720px) {
   .header-bar { padding: 16px 0; }
   .mobile-nav-toggle { display: inline-flex; }
-  .nav { display: none; }
-  .nav.is-open { display: flex; flex-direction: column; gap: 6px; position: absolute; left: 16px; right: 16px; top: 100%; margin-top: 8px; background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 8px; box-shadow: 0 12px 28px rgba(0,0,0,0.08); z-index: 1000; color: #111; }
-  .nav.is-open a { display: block; padding: 10px 12px; border-radius: 8px; }
-  .nav.is-open a:hover { background: #f7f7f7; }
+
+  /* Menü başlangıçta gizli */
+  .nav {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100%;
+    width: 250px;
+    background: #fff;
+    color: #111;
+    padding: 80px 20px 20px;
+    border-right: 1px solid #eee;
+    transition: left 0.3s ease;
+    z-index: 2000;
+    border-radius: 0; /* Köşeleri düz */
+    box-shadow: none; /* Gölge yok */
+  }
+
+  /* Menü açıldığında */
+  .nav.is-open {
+    left: 0;
+  }
+
+  .nav a {
+    display: block;
+    padding: 12px 8px;
+    border-radius: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .nav a:hover {
+    background: #f5f5f5;
+  }
+
+  /* Ekranı karartan arka plan */
+  .nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    z-index: 1500;
+  }
+
+  .nav-overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .btn {
@@ -225,7 +273,7 @@ header {
 @media (max-width: 900px) { .cta-card { grid-template-columns: 1fr; } }
 
 /* Footer responsive grid */
-.site-footer { background: #E6E6E6; }
+.site-footer { background: #f5f5f5; }
 .site-footer .container { padding: 28px 0; }
 .footer-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 24px; }
 .footer-list { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 6px; }
@@ -271,3 +319,25 @@ header {
 .home-secondary-item p {
   margin: 0;
 }
+
+/* --- Mobil uyumluluk için header ve footer padding düzeltmeleri --- */
+@media (max-width: 720px) {
+  header,
+  footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Eğer header-bar içeriği container dışında kalıyorsa */
+  .header-bar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Footer alt kısmında da kenar boşluğu olsun */
+  .footer-bottom {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
