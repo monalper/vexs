@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
   const svc = getServiceClient();
   const { data, error } = await svc
     .from('articles')
-    .select('id, title, slug, content, tag_id, thumbnail_url, status, published_at')
+    .select('id, title, slug, content, tag_id, thumbnail_url, thumbnail_source, status, published_at')
     .eq('id', id)
     .eq('author_id', editor.id)
     .maybeSingle();
@@ -27,7 +27,7 @@ export async function PUT(request, { params }) {
     if (!id) return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
 
     const body = await request.json();
-    const { title, content, tag_id, thumbnail_url, publish, status } = body || {};
+    const { title, content, tag_id, thumbnail_url, thumbnail_source, publish, status } = body || {};
 
     const svc = getServiceClient();
 
@@ -46,6 +46,7 @@ export async function PUT(request, { params }) {
     if (typeof content === 'string') update.content = content;
     if (Object.prototype.hasOwnProperty.call(body, 'tag_id')) update.tag_id = tag_id || null;
     if (Object.prototype.hasOwnProperty.call(body, 'thumbnail_url')) update.thumbnail_url = thumbnail_url || null;
+    if (Object.prototype.hasOwnProperty.call(body, 'thumbnail_source')) update.thumbnail_source = thumbnail_source || null;
 
     // Handle publish/unpublish
     const now = new Date().toISOString();

@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
+import TwitterWidgetLoader from "@/components/TwitterWidgetLoader";
 import Image from "next/image";
 import { fetchArticleBySlug, fetchArticleSlugs } from "@/lib/supabaseClient";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
@@ -90,8 +91,13 @@ export default async function ArticlePage({ params }) {
             </div>
 
             {article.thumbnail_url && (
-              <div className="article-hero">
-                <Image src={article.thumbnail_url} alt={article.title} fill style={{ objectFit: 'cover' }} sizes="100vw" />
+              <div>
+                <div className="article-hero">
+                  <Image src={article.thumbnail_url} alt={article.title} fill style={{ objectFit: 'cover' }} sizes="100vw" />
+                </div>
+                {article.thumbnail_source && (
+                  <p className="article-hero-caption">Photo Source: {article.thumbnail_source}</p>
+                )}
               </div>
             )}
 
@@ -106,6 +112,7 @@ export default async function ArticlePage({ params }) {
         </div>
       </main>
       <Footer />
+      <TwitterWidgetLoader />
       <JsonLd data={newsArticleJsonLd({ article })} />
       <JsonLd data={breadcrumbJsonLd(crumbs)} />
     </>

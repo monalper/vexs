@@ -11,6 +11,7 @@ export default function NewArticleForm({ tags = [] }) {
   const [title, setTitle] = useState("");
   const [tagId, setTagId] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [thumbnailSource, setThumbnailSource] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [html, setHtml] = useState("<p></p>");
@@ -37,7 +38,7 @@ export default function NewArticleForm({ tags = [] }) {
       const res = await fetch('/api/admin/articles', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content: html, tag_id: tagId || null, thumbnail_url: thumbnailUrl || null, publish })
+        body: JSON.stringify({ title, content: html, tag_id: tagId || null, thumbnail_url: thumbnailUrl || null, thumbnail_source: thumbnailSource || null, publish })
       });
       const j = await res.json();
       if (!res.ok) throw new Error(j?.error || 'Could not save');
@@ -61,8 +62,21 @@ export default function NewArticleForm({ tags = [] }) {
         </select>
         <div>
           <label className="muted" style={{ display: 'block', marginBottom: 6 }}>Cover image (optional)</label>
-          {thumbnailUrl && <img src={thumbnailUrl} alt="thumbnail" style={{ maxWidth: 320, borderRadius: 8, marginBottom: 8 }} />}
+          {thumbnailUrl && (
+            <div style={{ marginBottom: 8 }}>
+              <img src={thumbnailUrl} alt="thumbnail" style={{ maxWidth: 320, borderRadius: 8, marginBottom: 8 }} />
+            </div>
+          )}
           <input type="file" accept="image/*" onChange={(e) => onUploadThumbnail(e.target.files?.[0])} />
+          {thumbnailUrl && (
+            <input 
+              type="text" 
+              placeholder="Photo Source (opsiyonel)" 
+              value={thumbnailSource} 
+              onChange={(e) => setThumbnailSource(e.target.value)} 
+              style={{ padding: 8, borderRadius: 8, border: '1px solid #ddd', marginTop: 8, width: '100%', fontSize: 14 }} 
+            />
+          )}
         </div>
         <div>
           <label className="muted" style={{ display: 'block', marginBottom: 6 }}>Content</label>

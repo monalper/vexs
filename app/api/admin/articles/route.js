@@ -8,7 +8,7 @@ export async function POST(request) {
   if (!editor) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   try {
     const body = await request.json();
-    const { title, content, tag_id, thumbnail_url, publish } = body || {};
+    const { title, content, tag_id, thumbnail_url, thumbnail_source, publish } = body || {};
     if (!title || !content) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
 
     const svc = getServiceClient();
@@ -26,6 +26,7 @@ export async function POST(request) {
       author_id: editor.id,
       tag_id: tag_id || null,
       thumbnail_url: thumbnail_url || null,
+      thumbnail_source: thumbnail_source || null,
       status: publish ? 'published' : 'draft',
       published_at: publish ? now : null
     }).select('slug').single();

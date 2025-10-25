@@ -11,6 +11,7 @@ export default function EditArticleForm({ article, tags = [] }) {
   const [title, setTitle] = useState(article?.title || "");
   const [tagId, setTagId] = useState(article?.tag_id || "");
   const [thumbnailUrl, setThumbnailUrl] = useState(article?.thumbnail_url || "");
+  const [thumbnailSource, setThumbnailSource] = useState(article?.thumbnail_source || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [html, setHtml] = useState(article?.content || "<p></p>");
@@ -43,6 +44,7 @@ export default function EditArticleForm({ article, tags = [] }) {
           content: html,
           tag_id: tagId || null,
           thumbnail_url: thumbnailUrl || null,
+          thumbnail_source: thumbnailSource || null,
           publish
         })
       });
@@ -79,8 +81,21 @@ export default function EditArticleForm({ article, tags = [] }) {
         </select>
         <div>
           <label className="muted" style={{ display: 'block', marginBottom: 6 }}>Cover image (optional)</label>
-          {thumbnailUrl && <img src={thumbnailUrl} alt="thumbnail" style={{ maxWidth: 320, borderRadius: 8, marginBottom: 8 }} />}
+          {thumbnailUrl && (
+            <div style={{ marginBottom: 8 }}>
+              <img src={thumbnailUrl} alt="thumbnail" style={{ maxWidth: 320, borderRadius: 8, marginBottom: 8 }} />
+            </div>
+          )}
           <input type="file" accept="image/*" onChange={(e) => onUploadThumbnail(e.target.files?.[0])} />
+          {thumbnailUrl && (
+            <input 
+              type="text" 
+              placeholder="Photo Source (opsiyonel)" 
+              value={thumbnailSource} 
+              onChange={(e) => setThumbnailSource(e.target.value)} 
+              style={{ padding: 8, borderRadius: 8, border: '1px solid #ddd', marginTop: 8, width: '100%', fontSize: 14 }} 
+            />
+          )}
         </div>
         <div>
           <label className="muted" style={{ display: 'block', marginBottom: 6 }}>Content</label>

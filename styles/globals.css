@@ -189,7 +189,8 @@ header {
 .article-share a { display: inline-flex; align-items: center; color: inherit; text-decoration: none; }
 .article-share a:hover { color: var(--accent); }
 .article-share a svg { display: block; }
-.article-hero { position: relative; width: 100%; aspect-ratio: 16/9; background: #eee; border-radius: 10px; overflow: hidden; margin: 12px 0 12px; }
+.article-hero { position: relative; width: 100%; aspect-ratio: 16/9; background: #eee; border-radius: 10px; overflow: hidden; margin: 12px 0 8px; }
+.article-hero-caption { font-size: 14px; color: var(--muted); font-style: italic; text-align: center; margin: 8px 0 12px; }
 .article-body { font-size: 18px; line-height: 1.8; }
 .article-body h2 { font-size: 26px; margin: 22px 0 8px; }
 .article-body h3 { font-size: 22px; margin: 18px 0 6px; }
@@ -199,6 +200,82 @@ header {
 .article-body img { max-width: 100%; height: auto; border-radius: 8px; }
 .article-body a { color: var(--accent); }
 .article-body a:visited { color: var(--accent); }
+
+/* Image with caption */
+.article-body figure.image-with-caption { margin: 20px 0; }
+.article-body figure.image-with-caption img { margin-bottom: 8px; }
+.article-body figcaption.image-caption { 
+  font-size: 14px; 
+  color: var(--muted); 
+  font-style: italic; 
+  text-align: center;
+  padding: 4px 8px;
+}
+
+/* YouTube embed */
+.article-body .youtube-embed { 
+  position: relative; 
+  width: 100%; 
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  margin: 20px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+}
+.article-body .youtube-embed iframe { 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  border: none;
+}
+
+/* Twitter embed */
+.article-body .twitter-embed { 
+  margin: 20px auto;
+  max-width: 550px;
+}
+.article-body .twitter-embed blockquote.twitter-tweet { 
+  margin: 0 auto;
+}
+
+/* Editor styles for embeds */
+.tiptap-editor-content .youtube-embed {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  margin: 16px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+}
+.tiptap-editor-content .youtube-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.tiptap-editor-content .twitter-embed {
+  margin: 16px 0;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+.tiptap-editor-content figure.image-with-caption {
+  margin: 16px 0;
+}
+.tiptap-editor-content figcaption.image-caption {
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+  padding: 4px 8px;
+  margin-top: 8px;
+}
 
 /* Home layout inspired by major news sites */
 .home-top { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin: 16px 0 20px; }
@@ -216,6 +293,7 @@ header {
 .home-secondary-item h3 a {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -291,9 +369,9 @@ header {
 
 /* Search bar */
 .search-bar { position: relative; margin: 0 0 16px; }
-.search-input { width: 100%; padding: 12px 42px 12px 12px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; }
-.search-input:focus { outline: none; border-color: #bbb; box-shadow: 0 0 0 3px rgba(0,0,0,0.04); }
-.search-submit { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 8px; border: 1px solid #eee; background: #fff; color: #111; display: inline-flex; align-items: center; justify-content: center; }
+.search-input { width: 100%; padding: 12px 42px 12px 12px; border: none; border-radius: 992px; font-size: 16px; }
+.search-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(0,0,0,0.04); }
+.search-submit { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 899px; border: none; background: #fff; color: #111; display: inline-flex; align-items: center; justify-content: center; }
 .search-submit:hover { background: #f7f7f7; }
 .search-submit:active { transform: translateY(-50%) scale(0.98); }
 

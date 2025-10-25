@@ -11,7 +11,7 @@ export default async function EditArticlePage({ params }) {
 
   const { data: article, error } = await svc
     .from('articles')
-    .select('id, title, slug, content, tag_id, thumbnail_url, status, published_at')
+    .select('id, title, slug, content, tag_id, thumbnail_url, thumbnail_source, status, published_at')
     .eq('id', params.id)
     .eq('author_id', editor.id)
     .single();

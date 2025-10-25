@@ -5,7 +5,9 @@ import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
+import { YouTube } from "@/lib/tiptap-youtube";
+import { Twitter } from "@/lib/tiptap-twitter";
+import { ImageWithCaption } from "@/lib/tiptap-image-with-caption";
 
 export default function RichTextEditor({ value, onChange, placeholder = "İçeriği buraya yazın..." }) {
   const [editor, setEditor] = useState(null);
@@ -28,7 +30,9 @@ export default function RichTextEditor({ value, onChange, placeholder = "İçeri
         }),
         Placeholder.configure({ placeholder }),
         Link.configure({ openOnClick: false, autolink: true, protocols: ['http', 'https', 'mailto'] }),
-        Image.configure({ inline: false, allowBase64: true })
+        ImageWithCaption.configure({ inline: false, allowBase64: true }),
+        YouTube,
+        Twitter
       ],
       content: value || "<p></p>",
       onUpdate: ({ editor }) => onChange?.(editor.getHTML()),
@@ -43,7 +47,10 @@ export default function RichTextEditor({ value, onChange, placeholder = "İçeri
           (async () => {
             try {
               const url = await uploadImage(image);
-              e.chain().focus().setImage({ src: url, alt: image.name || 'image' }).run();
+              const caption = window.prompt('Photo Source (optional):', '');
+              const attrs = { src: url, alt: image.name || 'image' };
+              if (caption) attrs.caption = caption;
+              e.chain().focus().setImage(attrs).run();
             } catch (err) {
               // noop
             }
@@ -60,7 +67,10 @@ export default function RichTextEditor({ value, onChange, placeholder = "İçeri
           (async () => {
             try {
               const url = await uploadImage(image);
-              e.chain().focus().setImage({ src: url, alt: image.name || 'image' }).run();
+              const caption = window.prompt('Photo Source (optional):', '');
+              const attrs = { src: url, alt: image.name || 'image' };
+              if (caption) attrs.caption = caption;
+              e.chain().focus().setImage(attrs).run();
             } catch (err) {
               // noop
             }
@@ -123,9 +133,52 @@ export default function RichTextEditor({ value, onChange, placeholder = "İçeri
     if (!file) return;
     try {
       const url = await uploadImage(file);
-      editor.chain().focus().setImage({ src: url, alt: file.name || 'image' }).run();
+      const caption = window.prompt('Photo Source (optional):', '');
+      const attrs = { src: url, alt: file.name || 'image' };
+      if (caption) attrs.caption = caption;
+      editor.chain().focus().setImage(attrs).run();
     } catch {}
     e.target.value = '';
+  }
+
+  function insertYouTube() {
+    const url = window.prompt('YouTube Video URL:', '');
+    if (!url) return;
+    
+    let videoId = '';
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=)([^&]+)/,
+      /(?:youtube\.com\/embed\/)([^?]+)/,
+      /(?:youtu\.be\/)([^?]+)/
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) {
+        videoId = match[1];
+        break;
+      }
+    }
+    
+    if (!videoId) {
+      alert('Invalid YouTube URL');
+      return;
+    }
+    
+    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    editor.chain().focus().setYouTubeVideo({ src: embedUrl }).run();
+  }
+
+  function insertTwitter() {
+    const url = window.prompt('Tweet URL:', '');
+    if (!url) return;
+    
+    if (!url.includes('twitter.com') && !url.includes('x.com')) {
+      alert('Invalid Twitter/X URL');
+      return;
+    }
+    
+    editor.chain().focus().setTwitterEmbed({ src: url }).run();
   }
 
   return (
@@ -152,6 +205,9 @@ export default function RichTextEditor({ value, onChange, placeholder = "İçeri
         <Button label="Kaldır" title="Bağlantıyı kaldır" onClick={() => editor.chain().focus().unsetLink().run()} />
         <Button label="Görsel" title="Görsel ekle (dosya/clipboard)" onClick={openFilePicker} />
         <input ref={fileInputRef} type="file" accept="image/*" onChange={onPickFile} style={{ display: 'none' }} />
+        <span className="muted" style={{ margin: '0 6px' }}>|</span>
+        <Button label="YouTube" title="YouTube video ekle" onClick={insertYouTube} />
+        <Button label="Tweet" title="Tweet ekle" onClick={insertTwitter} />
         <span className="muted" style={{ margin: '0 6px' }}>|</span>
         <Button label="Temizle" title="Biçimi temizle" onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()} />
       </div>
