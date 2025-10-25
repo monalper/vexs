@@ -1,3 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="530" height="321" viewBox="0 0 530 321">
-  <text id="logo" transform="translate(0 257)" fill="#f8f8f8" font-size="265" font-family="InterTight-ExtraBoldItalic, Inter Tight" font-weight="800" font-style="italic" letter-spacing="-0.07em"><tspan x="0" y="0">vexs</tspan></text>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="530" height="158" viewBox="0 0 530 158">
+  <defs>
+    <clipPath id="clip-path">
+      <rect y="106" width="530" height="158" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="logo" transform="translate(0 -106)" clip-path="url(#clip-path)" style="isolation: isolate">
+    <text id="logo-2" data-name="logo" transform="translate(0 257)" fill="#f8f8f8" font-size="265" font-family="InterTight-ExtraBoldItalic, Inter Tight" font-weight="800" font-style="italic" letter-spacing="-0.07em"><tspan x="0" y="0">vexs</tspan></text>
+  </g>
 </svg>
