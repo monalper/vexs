@@ -5,7 +5,7 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <div className="site-title" aria-label="vexs">vexs</div>
+            <div className="site-title" aria-label="vexs">vexs.space</div>
             <p className="muted footer-desc">
               Trusted, fast and independent news. Stay up to date with curated coverage of technology, science and current affairs.
             </p>

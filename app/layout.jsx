@@ -37,6 +37,7 @@ export const metadata = {
   },
   robots: { index: true, follow: true },
   themeColor: "#F8F8F8",
+  icons: { icon: "/favicon.svg" },
   colorScheme: "light",
   category: "news",
   other: { "news_keywords": "news, current affairs, science, technology" }

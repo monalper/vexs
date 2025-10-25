@@ -22,7 +22,7 @@ export default function Header() {
     <header className="site-header">
       <div className="container header-bar">
         <Link href="/" className="site-title" aria-label="vexs homepage">
-          vexs
+          <img src="/logo.svg" alt="vexs logo" className="site-logo" />
         </Link>
         <button
           className="mobile-nav-toggle"
@@ -41,4 +41,3 @@ export default function Header() {
     </header>
   );
 }
-
