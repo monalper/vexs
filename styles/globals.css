@@ -591,3 +591,33 @@ header {
   }
 }
 
+.article-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.article-share-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.article-share-inline a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.article-share-inline a:hover {
+  color: #0077b5; /* LinkedIn mavisi gibi bir ton */
+  transform: translateY(-2px);
+}
+
+.article-share-inline svg {
+  width: 17px;
+  height: 17px;
+}
