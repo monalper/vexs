@@ -613,7 +613,7 @@ header {
 }
 
 .article-share-inline a:hover {
-  color: #ff0000; /* LinkedIn mavisi gibi bir ton */
+  color: #482fd3; /* LinkedIn mavisi gibi bir ton */
   transform: translateY(-2px);
 }
 
