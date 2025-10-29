@@ -3,12 +3,14 @@ import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import TwitterWidgetLoader from "@/components/TwitterWidgetLoader";
+import ArticleInfiniteReader from "@/components/ArticleInfiniteReader";
 import Image from "next/image";
-import { fetchArticleBySlug, fetchArticleSlugs } from "@/lib/supabaseClient";
+import { fetchArticleBySlug, fetchArticleSlugs, fetchArticleSlugsByTagId, fetchArticleSlugsByTagCategory } from "@/lib/supabaseClient";
 import { FaFacebook, FaLinkedin } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { newsArticleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { sanitizeHtml } from "@/lib/sanitize";
+import { formatDateLong } from "@/lib/date";
 
 export const revalidate = 300; // 5 minutes
 
@@ -77,6 +79,27 @@ export default async function ArticlePage({ params }) {
   const readMin = Math.max(1, Math.round(words / 200));
   const pageUrl = `https://vexs.space/articles/${article.slug}`;
 
+  // Prepare next slugs with priority: same tag -> same category -> random
+  let nextSlugs = [];
+  try {
+    const excludeSlug = article.slug;
+    const sameTag = article.tag?.id
+      ? await fetchArticleSlugsByTagId(article.tag.id, { excludeSlug, limit: 100 })
+      : [];
+    const sameCategory = article.tag?.category
+      ? await fetchArticleSlugsByTagCategory(article.tag.category, { excludeSlug, excludeTagId: article.tag?.id, limit: 200 })
+      : [];
+    const all = await fetchArticleSlugs(300);
+    const used = new Set([excludeSlug, ...sameTag, ...sameCategory]);
+    const rest = all.filter((s) => !used.has(s));
+    // simple shuffle for randomness
+    for (let i = rest.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [rest[i], rest[j]] = [rest[j], rest[i]];
+    }
+    nextSlugs = [...sameTag, ...sameCategory, ...rest];
+  } catch {}
+
   return (
     <>
       <Header />
@@ -140,9 +163,7 @@ export default async function ArticlePage({ params }) {
               {article.published_at && (
                 <>
                   <span aria-hidden> · </span>
-                  <time dateTime={article.published_at}>
-                    {new Date(article.published_at).toLocaleString("en-US")}
-                  </time>
+                  <time dateTime={article.published_at}>{formatDateLong(article.published_at)}</time>
                 </>
               )}
               <span aria-hidden> · </span>
@@ -175,6 +196,8 @@ export default async function ArticlePage({ params }) {
               }}
             />
           </article>
+          {/* Lazy load and append next articles */}
+          <ArticleInfiniteReader initialSlug={article.slug} nextSlugs={nextSlugs} />
         </div>
       </main>
       <Footer />

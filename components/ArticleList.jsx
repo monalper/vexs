@@ -1,5 +1,6 @@
 import ArticleCard from "./ArticleCard";
 import Image from "next/image";
+import { formatDateLong } from "@/lib/date";
 
 export default function ArticleList({ articles = [], layout = "list" }) {
   if (!articles.length) return <p className="muted">No content yet.</p>;
@@ -21,7 +22,7 @@ export default function ArticleList({ articles = [], layout = "list" }) {
             <div className="meta muted">
               {a.tag && (<a className="chip" href={`/tag/${a.tag.slug}`}>#{a.tag.name}</a>)}
               {a.tag && a.published_at && <span> · </span>}
-              {a.published_at && (<time dateTime={a.published_at}>{a.date_str ?? new Date(a.published_at).toLocaleDateString('en-US', { timeZone: 'UTC' })}</time>)}
+              {a.published_at && (<time dateTime={a.published_at}>{a.date_str ?? formatDateLong(a.published_at)}</time>)}
             </div>
           </article>
         ))}
@@ -37,4 +38,3 @@ export default function ArticleList({ articles = [], layout = "list" }) {
     </div>
   );
 }
-

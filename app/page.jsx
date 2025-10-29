@@ -1,15 +1,21 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Image from "next/image";
-import { fetchPublishedArticles, fetchAllTags } from "@/lib/supabaseClient";
+import { fetchPublishedArticles, fetchTagsByCategory, fetchPublishedArticlesByTagCategory } from "@/lib/supabaseClient";
+import { formatDateLong } from "@/lib/date";
 
 export const revalidate = 120; // revalidate home every 2 minutes
 
 export default async function HomePage() {
-  const [articles, tags] = await Promise.all([
-    fetchPublishedArticles({ limit: 20 }),
-    fetchAllTags()
+  const [articles, groupedTags] = await Promise.all([
+    fetchPublishedArticles({ limit: 22 }),
+    fetchTagsByCategory()
   ]);
+
+  const categoryNames = Object.keys(groupedTags || {});
+  const categoryArticlesList = await Promise.all(
+    categoryNames.map((c) => fetchPublishedArticlesByTagCategory(c, { limit: 6 }))
+  );
 
   return (
     <>
@@ -35,8 +41,8 @@ export default async function HomePage() {
         {articles.length > 0 ? (
           (() => {
             const [lead, ...rest] = articles;
-            const secondary = rest.slice(0, 4);
-            const latest = rest.slice(4);
+            const secondary = rest.slice(0, 6);
+            const latest = rest.slice(6);
             return (
               <>
                 {/* Top: lead story + secondary list */}
@@ -55,7 +61,7 @@ export default async function HomePage() {
                       <h2 className="home-hero-title"><a href={`/articles/${lead.slug}`}>{lead.title}</a></h2>
                       {lead.excerpt && <p className="home-hero-excerpt">{lead.excerpt}</p>}
                       <div className="home-hero-meta">
-                        {lead.published_at && (<time dateTime={lead.published_at}>{new Date(lead.published_at).toLocaleDateString('en-US')}</time>)}
+                        {lead.published_at && (<time dateTime={lead.published_at}>{formatDateLong(lead.published_at)}</time>)}
                       </div>
                     </div>
                   </article>
@@ -73,7 +79,7 @@ export default async function HomePage() {
                         </a>
                         <div className="content">
                           <h3><a href={`/articles/${a.slug}`}>{a.title}</a></h3>
-                          <div className="muted">{a.published_at && (<time dateTime={a.published_at}>{new Date(a.published_at).toLocaleDateString('en-US')}</time>)}</div>
+                          <div className="muted">{a.published_at && (<time dateTime={a.published_at}>{formatDateLong(a.published_at)}</time>)}</div>
                         </div>
                       </article>
                     ))}
@@ -101,7 +107,7 @@ export default async function HomePage() {
                           {a.excerpt && <p className="muted excerpt">{a.excerpt}</p>}
                           <div className="muted meta">
                             {a.tag && (<a href={`/tag/${a.tag.slug}`} className="muted">#{a.tag.name}</a>)}
-                            {a.published_at && <span> · {new Date(a.published_at).toLocaleDateString('en-US')}</span>}
+                            {a.published_at && <span> · {formatDateLong(a.published_at)}</span>}
                           </div>
                         </article>
                       ))}
@@ -127,20 +133,42 @@ export default async function HomePage() {
           <p className="muted">No content yet.</p>
         )}
 
-        {/* Explore tags */}
-        {tags.length > 0 && (
-          <section aria-labelledby="tags" className="home-section">
-            <h2 id="tags" className="section-title">Tags</h2>
-            <div className="tags-wrap">
-              {tags.map((t) => (
-                <a key={t.id} href={`/tag/${t.slug}`} className="tag-chip">#{t.name}</a>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* Category sections */}
+        {categoryNames.map((cat, idx) => {
+          const list = categoryArticlesList[idx] || [];
+          if (!list.length) return null;
+          const sectionId = `category-${idx}`;
+          return (
+            <section key={cat} aria-labelledby={sectionId} className="home-grid home-section">
+              <div className="section-head">
+                <h2 id={sectionId} className="section-title">{cat}</h2>
+              </div>
+              <div className="home-grid-wrap">
+                {list.map((a) => (
+                  <article key={a.id} className="home-grid-card">
+                    <a href={`/articles/${a.slug}`} className="media" aria-label={a.title}>
+                      <div className="media-inner">
+                        {a.thumbnail_url && (
+                          <Image src={a.thumbnail_url} alt={a.title} fill sizes="360px" style={{ objectFit: 'cover' }} />
+                        )}
+                      </div>
+                    </a>
+                    <h3 className="title"><a href={`/articles/${a.slug}`}>{a.title}</a></h3>
+                    {a.excerpt && <p className="muted excerpt">{a.excerpt}</p>}
+                    <div className="muted meta">
+                      {a.tag && (<a href={`/tag/${a.tag.slug}`} className="muted">#{a.tag.name}</a>)}
+                      {a.published_at && <span> · {formatDateLong(a.published_at)}</span>}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </main>
       <Footer />
     </>
   );
 }
+
 

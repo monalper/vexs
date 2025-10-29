@@ -1,6 +1,7 @@
 import { getServiceClient } from "@/lib/supabaseServer";
 import { requireEditor } from "@/lib/auth";
 import Link from "next/link";
+import { formatDateLong } from "@/lib/date";
 
 export default async function AdminHome() {
   const editor = await requireEditor();
@@ -26,7 +27,7 @@ export default async function AdminHome() {
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
               <div>
                 <strong>{a.title}</strong>
-                <div className="muted">{a.status} {a.published_at ? `• ${new Date(a.published_at).toLocaleString('en-US')}` : ''}</div>
+                <div className="muted">{a.status} {a.published_at ? `• ${formatDateLong(a.published_at)}` : ''}</div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
                 <Link href={`/admin/articles/${a.id}/edit`}>Edit</Link>
@@ -42,4 +43,5 @@ export default async function AdminHome() {
     </div>
   );
 }
+
 

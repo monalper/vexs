@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SearchPageClient from "@/components/SearchPageClient";
 import { getPublicClient } from "@/lib/supabaseClient";
+import { formatDateLong } from "@/lib/date";
 
 export const dynamic = 'force-dynamic';
 
@@ -29,7 +30,7 @@ async function getInitialArticles(q) {
   return (data || []).map((a) => ({
     ...a,
     excerpt: a.content ? a.content.replace(/<[^>]+>/g, " ").slice(0, 160) + (a.content.length > 160 ? "…" : "") : null,
-    date_str: a.published_at ? new Date(a.published_at).toLocaleDateString('en-US', { timeZone: 'UTC' }) : null
+    date_str: a.published_at ? formatDateLong(a.published_at) : null
   }));
 }
 
@@ -48,4 +49,3 @@ export default async function SearchPage({ searchParams }) {
     </>
   );
 }
-

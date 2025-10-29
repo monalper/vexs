@@ -1,5 +1,6 @@
 import { getPublicClient } from "@/lib/supabaseClient";
 import { NextResponse } from "next/server";
+import { formatDateLong } from "@/lib/date";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -31,7 +32,7 @@ export async function GET(request) {
   const articles = (data || []).map((a) => ({
     ...a,
     excerpt: a.content ? a.content.replace(/<[^>]+>/g, " ").slice(0, 160) + (a.content.length > 160 ? "…" : "") : null,
-    date_str: a.published_at ? new Date(a.published_at).toLocaleDateString('en-US', { timeZone: 'UTC' }) : null
+    date_str: a.published_at ? formatDateLong(a.published_at) : null
   }));
 
   return NextResponse.json({
@@ -41,3 +42,4 @@ export async function GET(request) {
     hasMore: offset + limit < count
   });
 }
+

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { formatDateLong } from "@/lib/date";
 
 export default function ArticleCard({ article }) {
   const href = `/articles/${article.slug}`;
@@ -20,7 +21,7 @@ export default function ArticleCard({ article }) {
           )}
           <span aria-hidden="true">·</span>
           {article.published_at && (
-            <time dateTime={article.published_at}>{article.date_str ?? new Date(article.published_at).toLocaleDateString('en-US', { timeZone: 'UTC' })}</time>
+            <time dateTime={article.published_at}>{article.date_str ?? formatDateLong(article.published_at)}</time>
           )}
         </div>
         {article.excerpt && (
@@ -30,4 +31,3 @@ export default function ArticleCard({ article }) {
     </article>
   );
 }
-
